@@ -20,20 +20,23 @@ spec:
         image: postgres:alpine-armv7
         imagePullPolicy: IfNotPresent
         env:
-        - name: POSTGRES_DB
-          value: psqldb
-        - name: POSTGRES_USER
-          value: postgres
-        #- name: POSTGRES_HOST
-        #  value: 127.0.0.1
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_DB
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-            #kubectl create secret generic postgres-passwd --from-literal=password=system123 -n nc
-              name: postgres-passwd
-              key: password
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
         ports:
         - containerPort: 5432
         volumeMounts:
@@ -58,3 +61,4 @@ spec:
       targetPort: 5432
   selector:
     app: postgres
+  type: NodePort
