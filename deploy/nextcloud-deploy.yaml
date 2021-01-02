@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-deploy
+  namespace: nc
+  labels:
+    app: nextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      containers:
+      - name: nextcloud
+        image: nextcloud:stable-fpm-alpine-armv7
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: nextcloud
+          mountPath: /var/www/html
+        - name: apps
+          mountPath: /var/www/html/custom_apps
+        - name: config
+          mountPath: /var/www/html/config
+        - name: data
+          mountPath: /var/www/html/data
+        ports:
+        - containerPort: 9000
+      volumes:
+      - name: nextcloud
+        persistentVolumeClaim:
+          claimName: nextcloud-pvc
+      - name: apps
+        persistentVolumeClaim:
+          claimName: nextcloud-apps-pvc
+      - name: config
+        persistentVolumeClaim:
+          claimName: nextcloud-config-pvc
+      - name: data
+        persistentVolumeClaim:
+          claimName: nextcloud-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud-svc
+  namespace: nc
+  labels:
+    app: nextcloud
+spec:
+  ports:
+  - port: 9000
+    targetPort: 9000
+    protocol: TCP
+  selector:
+    app: nextcloud

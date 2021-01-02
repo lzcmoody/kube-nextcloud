@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nextcloud-apps-pv
+  namespace: nc
+  labels:
+    app: nextcloud
+spec:
+  storageClassName: pv1
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/media/k3s/apps"
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-apps-pvc
+  namespace: nc
+  labels:
+    app: nextcloud
+spec:
+  storageClassName: pv1
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Gi
+  selector:
+    matchLabels:
+      app: nextcloud
