@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:alpine-armv7
+        image: charleslucloud/postgres:alpine-armv7
         imagePullPolicy: IfNotPresent
         env:
         - name: PGDATA
