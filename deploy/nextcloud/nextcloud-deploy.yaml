@@ -15,9 +15,16 @@ spec:
       labels:
         app: nextcloud
     spec:
+      initContainers:
+      - name: volume-permissions
+        image: busybox:1.31.1
+        command: ["chmod", "777", "/var/www/html"]
+        volumeMounts:
+          - name: nextcloud
+            mountPath: /var/www/html
       containers:
       - name: nextcloud
-        image: charleslucloud/nextcloud:stable-fpm-alpine-armv7
+        image: nextcloud@sha256:3b10d9e24f2511161b2c1a91c74462073324b2053f67967fde0964231af168f0
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: nextcloud
