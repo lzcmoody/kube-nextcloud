@@ -1,8 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nextcloud-deploy
-  namespace: nc
+  name: {{ .Release.Name }}-nextcloud-deploy
   labels:
     app: nextcloud
 spec:
@@ -15,10 +14,19 @@ spec:
       labels:
         app: nextcloud
     spec:
+      initContainers:
+      - name: volume-permissions
+        image: busybox:1.31.1
+        command: ["chmod", "777", "/var/www/html"]
+        volumeMounts:
+          - name: nextcloud
+            mountPath: /var/www/html
       containers:
-      - name: nextcloud
-        image: charleslucloud/nextcloud:stable-fpm-alpine-armv7
-        imagePullPolicy: IfNotPresent
+      {{- with .Values.deployment.nextcloud }}
+      - name: {{ .name }}
+        image: {{ .image }}
+        imagePullPolicy: {{ .imagePullPolicy }}
+      {{- end }}
         volumeMounts:
         - name: nextcloud
           mountPath: /var/www/html
@@ -33,28 +41,13 @@ spec:
       volumes:
       - name: nextcloud
         persistentVolumeClaim:
-          claimName: nextcloud-pvc
+          claimName: {{ .Release.Name }}-nextcloud-pvc
       - name: apps
         persistentVolumeClaim:
-          claimName: nextcloud-apps-pvc
+          claimName: {{ .Release.Name }}-nextcloud-apps-pvc
       - name: config
         persistentVolumeClaim:
-          claimName: nextcloud-config-pvc
+          claimName: {{ .Release.Name }}-nextcloud-config-pvc
       - name: data
         persistentVolumeClaim:
-          claimName: nextcloud-data-pvc
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nextcloud-svc
-  namespace: nc
-  labels:
-    app: nextcloud
-spec:
-  ports:
-  - port: 9000
-    targetPort: 9000
-    protocol: TCP
-  selector:
-    app: nextcloud
+          claimName: {{ .Release.Name }}-nextcloud-data-pvc

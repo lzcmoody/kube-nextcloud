@@ -1,8 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deploy
-  namespace: nc
+  name: {{ .Release.Name }}-nginx-deploy
   labels:
     app: nginx
 spec:
@@ -16,9 +15,11 @@ spec:
         app: nginx
     spec:
       containers:
-      - name: nginx
-        image: charleslucloud/nginx:stable-alpine-armv7
-        imagePullPolicy: IfNotPresent
+      {{- with .Values.deployment.nginx }}
+      - name: {{ .name }}
+        image: {{ .image }}
+        imagePullPolicy: {{ .imagePullPolicy }}
+      {{- end }}
         volumeMounts:
         - name: conf
           mountPath: /etc/nginx/nginx.conf
@@ -36,22 +37,4 @@ spec:
             path: nginx.conf
       - name: nextcloud
         persistentVolumeClaim:
-          claimName: nextcloud-pvc
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-svc
-  namespace: nc
-  labels:
-    app: nginx
-spec:
-  ports:
-  - port: 80
-    targetPort: 80
-    protocol: TCP
-    nodePort: 30080
-  selector:
-    app: nginx
-  type: NodePort
+          claimName: {{ .Release.Name }}-nextcloud-pvc

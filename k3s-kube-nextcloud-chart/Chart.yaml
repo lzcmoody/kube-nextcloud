@@ -1,0 +1,14 @@
+apiVersion: v2
+name: kube-nextcloud
+description: nextcloud deployment based on k3s
+type: application
+version: 1.1.1
+appVersion: 1.1.1
+keywords:
+  - nextcloud
+  - k3s
+sources:
+  - https://github.com/lzcmoody/kube-nextcloud
+maintainers:
+  - name: charles
+    email: lzcmoody@live.com

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-nextcloud-config-pvc
+  labels:
+    app: nextcloud
+spec:
+  storageClassName: pv1
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.resources.storage.nextcloud.config }}
+  selector:
+    matchLabels:
+      app: nextcloud

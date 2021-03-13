@@ -1,0 +1,32 @@
+# Deployment configuration for kube-nextcloud
+deployment:
+  nextcloud:
+    name: nextcloud
+    image: nextcloud@sha256:3b10d9e24f2511161b2c1a91c74462073324b2053f67967fde0964231af168f0
+    imagePullPolicy: IfNotPresent
+    targetPort: 9000
+  nginx:
+    name: nginx
+    image: nginx@sha256:b15f9de723e98747c55776640f3051654bc2a907443ae1e07e1083725de00a54
+    imagePullPolicy: IfNotPresent
+    targetPort: 80
+    nodePort: 30081
+  postgres:
+    name: postgres
+    image: postgres@sha256:fcceea500e71d805033d1abb58d6d269f53c893b3ab25898dd2ac32d5c076b06
+    imagePullPolicy: IfNotPresent
+    targetPort: 5432
+    nodePort: 30032
+    POSTGRES_DB: nextcloud
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: demo123
+resources:
+  storage:
+    nextcloud:
+      app: 2Gi
+      data: 50Gi
+      config: 2Gi
+      nextcloud: 2Gi
+    postgres:
+      pgdata: 10Gi
+persistentVolumeReclaimPolicy: Recycle

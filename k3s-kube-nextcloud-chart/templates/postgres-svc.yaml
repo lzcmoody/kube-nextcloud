@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-postgres-svc
+  labels:
+    app: postgres
+spec:
+  ports:
+    - port: 5432
+      targetPort: {{ .Values.deployment.postgres.targetPort }}
+      nodePort: {{ .Values.deployment.postgres.nodePort }}
+      protocol: TCP
+  selector:
+    app: postgres
+  type: NodePort

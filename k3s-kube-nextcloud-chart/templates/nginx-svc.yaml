@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-nginx-svc
+  labels:
+    app: nginx
+spec:
+  ports:
+  - port: 80
+    targetPort: {{ .Values.deployment.nginx.targetPort }}
+    nodePort: {{ .Values.deployment.nginx.nodePort }}
+    protocol: TCP
+  selector:
+    app: nginx
+  type: NodePort
