@@ -31,7 +31,7 @@ spec:
       volumes:
       - name: conf
         configMap:
-          name: nginx-conf-cm
+          name: {{ .Release.Name }}-nginx-conf-cm
           items:
           - key: nginx.conf
             path: nginx.conf
