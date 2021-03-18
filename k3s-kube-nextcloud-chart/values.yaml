@@ -1,4 +1,8 @@
-# Deployment configuration for kube-nextcloud
+#****************************************************************************
+#*******************************KUBE-NEXTCLOUD*******************************
+#****************************************************************************
+
+# Deployment Configuration
 deployment:
   nextcloud:
     name: nextcloud
@@ -30,3 +34,7 @@ resources:
     postgres:
       pgdata: 10Gi
 persistentVolumeReclaimPolicy: Recycle
+# Traefik Ingress Configuration
+ingress:
+  enabled: True
+  domain: nextcloud.charleslu.me

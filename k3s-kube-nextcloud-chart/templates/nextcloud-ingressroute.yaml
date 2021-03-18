@@ -1,0 +1,15 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ .Release.Name }}-nextcloud-ingressroute
+spec:
+  entryPoints:
+  - web
+  routes:
+  - kind: Rule
+    match: Host(`{{ .Values.ingress.domain }}`)
+    services:
+    - name: {{ .Release.Name }}-nginx-svc
+      port: 80
+{{- end -}}
